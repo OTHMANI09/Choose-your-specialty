@@ -690,24 +690,14 @@
         import { getAnalytics } from 'https://www.gstatic.com/firebasejs/11.7.3/firebase-analytics.js';
       
         const firebaseConfig = {
-
     apiKey: "AIzaSyAmDR8MDGmHT0FkGBpEZLWnYLMzQ1iQFes",
-
     authDomain: "choose-your-specialty.firebaseapp.com",
-
     projectId: "choose-your-specialty",
-
     storageBucket: "choose-your-specialty.firebasestorage.app",
-
     messagingSenderId: "1051887719055",
-
     appId: "1:1051887719055:web:297152296421354104d6fa",
-
     measurementId: "G-FR7CSF62L4"
-
-  };
-
-      
+  };    
   
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app); 
@@ -1120,6 +1110,111 @@
             // Save the PDF
             doc.save(`استمارة_التوجيه_${document.getElementById('lname').value}_${document.getElementById('fname').value}.pdf`);
         }
+        async function submitForm() {
+    const { db, firestoreFunctions } = window.firebaseApp || {};
+    const { collection, addDoc, serverTimestamp } = firestoreFunctions || {};
+    
+    if (!addDoc) {
+        console.error("Firebase functions not available");
+        showAlert("نظام التخزين غير متاح حالياً، يرجى المحاولة لاحقاً", "danger");
+        return;
+    }
+
+    const confirmAccuracy = document.getElementById('confirmAccuracy');
+    if (!confirmAccuracy?.checked) {
+        showAlert('يرجى التأكيد على صحة المعلومات المقدمة', 'danger');
+        confirmAccuracy?.classList.add('is-invalid');
+        return;
+    }
+
+    const submitButton = document.getElementById('submitButton');
+    submitButton.disabled = true;
+    submitButton.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i> جاري الإرسال...';
+
+    try {
+        const form = document.getElementById('registrationForm');
+        let fileUrl = null;
+
+        // Handle file upload to ImgBB if file exists
+        const fileInput = document.getElementById('fileUpload');
+        if (fileInput.files.length > 0) {
+            const file = fileInput.files[0];
+            
+            // Validate file size (1MB limit)
+            if (file.size > 1 * 1024 * 1024) {
+                throw new Error("حجم الملف كبير جدًا. يرجى اختيار ملف أقل من 1 ميجابايت");
+            }
+            
+            // Upload to ImgBB
+            fileUrl = await uploadToImgBB(file);
+        }
+
+        // Prepare form data for Firestore
+        const formData = {
+            // Personal Information
+            fname: form.fname.value,
+            lname: form.lname.value,
+            nom: form.nom.value,
+            prenom: form.prenom.value,
+            birthdate: form.birthdate.value,
+            birthplace: form.birthplace.value,
+            
+            // Contact Information
+            email: form.email.value,
+            phone: form.phone.value,
+            registrationNumber: form.registrationNumber.value,
+            
+            // Academic Information
+            department: selectedDepartment,
+            specialties: selectedDepartment === 'socialSciences' ? 
+                        socialSciencesSpecialties : humanitiesSpecialties,
+            
+            // System Information
+            fileUrl: fileUrl, // Will be null if no file uploaded
+            submittedAt: serverTimestamp()
+        };
+
+        // Add to Firestore
+        await addDoc(collection(db, "registrations"), formData);
+
+        // Show success
+        document.getElementById('confirmationSection').classList.add('hidden');
+        currentStep = 5;
+        document.getElementById('successSection').classList.remove('hidden');
+        document.getElementById('progressBar').style.width = '100%';
+
+    } catch (error) {
+        console.error("Error submitting:", error);
+        showAlert(حدث خطأ أثناء الإرسال: ${error.message}, 'danger');
+    } finally {
+        submitButton.disabled = false;
+        submitButton.innerHTML = '<i class="fas fa-paper-plane me-2"></i> إرسال الطلب';
+    }
+}
+
+// ImgBB Upload Function
+async function uploadToImgBB(file) {
+    try {
+        const formData = new FormData();
+        formData.append("image", file);
+        
+        const response = await fetch("https://api.imgbb.com/1/upload?key=3e4da14142a2ae5084d3cc4028dfceef", {
+            method: "POST",
+            body: formData
+        });
+        
+        if (!response.ok) {
+            throw new Error("تعذر رفع الملف، يرجى المحاولة لاحقاً");
+        }
+        
+        const data = await response.json();
+        return data.data.url; // Returns direct image URL
+        
+    } catch (error) {
+        console.error("ImgBB upload error:", error);
+        throw new Error("تعذر رفع الملف، يرجى المحاولة لاحقاً");
+    }
+}
     </script>
 </body>
 </html>
