@@ -377,26 +377,6 @@
             color: var(--dark);
         }
 
-        /* زر تحميل PDF */
-        .btn-download-pdf {
-            background-color: var(--orange);
-            border-color: var(--orange);
-            color: white;
-            padding: 12px 20px;
-            font-size: 18px;
-            font-weight: 500;
-            border-radius: 8px;
-            transition: all 0.3s;
-            margin-top: 15px;
-        }
-
-        .btn-download-pdf:hover {
-            background-color: #e67e00;
-            border-color: #e67e00;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-        }
-
         @media (max-width: 768px) {
             .department-selector {
                 flex-direction: column;
@@ -560,7 +540,7 @@
                     </div>
                 </div>
 
-                <input type="hidden" id="department" name="department">
+                <input type="hidden" id="department" name="department" required>
 
                 <div class="form-footer">
                     <button type="button" class="btn btn-secondary" onclick="previousStep(2)"><i class="fas fa-arrow-right me-2"></i> السابق</button>
@@ -658,9 +638,6 @@
                     <i class="fas fa-check-circle fa-5x text-success mb-4"></i>
                     <h2>تم تسجيل رغبات التوجيه بنجاح!</h2>
                     <p>شكراً لك، تم حفظ بياناتك في النظام</p>
-                    <button type="button" class="btn btn-download-pdf mt-4" onclick="generatePDF()">
-                        <i class="fas fa-file-pdf me-2"></i> تحميل الاستمارة PDF
-                    </button>
                 </div>
             </div>
         </form>
@@ -715,10 +692,6 @@
         console.log("Firebase initialized successfully!");
       </script>
 
-    <!-- إضافة مكتبة jsPDF لإنشاء ملفات PDF -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         let currentStep = 1;
@@ -740,12 +713,23 @@
         document.addEventListener('DOMContentLoaded', function() {
             document.getElementById('fileUpload').addEventListener('change', function() {
                 const file = this.files[0];
-                const fileName = file ? file.name : 'لم يتم اختيار ملف';
+                if (!file) {
+                    document.getElementById('fileName').textContent = 'لم يتم اختيار ملف';
+                    this.setCustomValidity('يرجى اختيار ملف');
+                    return;
+                }
+                
+                const fileName = file.name;
                 document.getElementById('fileName').textContent = fileName;
-                if (file && file.size > 1 * 1024 * 1024) { 
+                
+                // التحقق من حجم الملف (1 ميجابايت كحد أقصى)
+                if (file.size > 1 * 1024 * 1024) { 
                     showAlert('حجم الملف كبير جدًا. يرجى اختيار ملف أقل من 1 ميجابايت.', 'danger');
                     this.value = '';
                     document.getElementById('fileName').textContent = 'لم يتم اختيار ملف';
+                    this.setCustomValidity('يرجى اختيار ملف بحجم أقل من 1 ميجابايت');
+                } else {
+                    this.setCustomValidity('');
                 }
             });
             initializeSpecialties();
@@ -782,7 +766,7 @@
                         <h4>${specialty.name}</h4>
                     </div>
                     <div class="col-md-4">
-                        <select id="${specialty.id}-order" class="form-select" onchange="updateSpecialtyOrder('${specialty.id}', this.value, '${type}')">
+                        <select id="${specialty.id}-order" class="form-select" onchange="updateSpecialtyOrder('${specialty.id}', this.value, '${type}')" required>
                             <option value="">اختر الأولوية</option>
                             ${Array.from({length: maxOrder}, (_, i) => i + 1).map(num => 
                                 `<option value="${num}">${num}</option>`
@@ -793,6 +777,114 @@
             `;
             
             return card;
+        }
+
+        function updateSpecialtyOrder(specialtyId, order, type) {
+            const specialties = type === 'social' ? socialSciencesSpecialties : humanitiesSpecialties;
+            const specialty = specialties.find(s => s.id === specialtyId);
+            
+            if (specialty) {
+                // إذا كان هناك تخصص آخر له نفس الترتيب، قم بإعادة تعيينه
+                const existingSpecialty = specialties.find(s => s.id !== specialtyId && s.order === parseInt(order));
+                if (existingSpecialty) {
+                    existingSpecialty.order = null;
+                    document.getElementById(`${existingSpecialty.id}-order`).value = '';
+                }
+                
+                specialty.order = parseInt(order);
+                
+                // تحديث مظهر البطاقات
+                specialties.forEach(s => {
+                    const card = document.getElementById(`card-${s.id}`);
+                    if (s.order !== null) {
+                        card.classList.add('selected');
+                    } else {
+                        card.classList.remove('selected');
+                    }
+                });
+            }
+        }
+
+        function selectDepartment(department) {
+            selectedDepartment = department;
+            document.getElementById('department').value = department;
+            
+            const socialSciencesCard = document.querySelector('.department-card:nth-child(1)');
+            const humanitiesCard = document.querySelector('.department-card:nth-child(2)');
+            
+            if (department === 'socialSciences') {
+                socialSciencesCard.classList.add('selected');
+                humanitiesCard.classList.remove('selected');
+            } else {
+                socialSciencesCard.classList.remove('selected');
+                humanitiesCard.classList.add('selected');
+            }
+        }
+
+        function validateStep(step) {
+            let isValid = true;
+            
+            if (step === 1) {
+                // التحقق من المعلومات الشخصية
+                const requiredFields = ['fname', 'lname', 'nom', 'prenom', 'birthdate', 'birthplace', 'email', 'phone', 'registrationNumber', 'fileUpload'];
+                
+                requiredFields.forEach(field => {
+                    const element = document.getElementById(field);
+                    if (!element.value) {
+                        element.classList.add('is-invalid');
+                        isValid = false;
+                        
+                        if (field === 'fileUpload' && !element.files[0]) {
+                            showAlert('يرجى اختيار ملف', 'danger');
+                        }
+                    } else {
+                        element.classList.remove('is-invalid');
+                    }
+                });
+                
+                if (!isValid) {
+                    showAlert('يرجى ملء جميع الحقول المطلوبة', 'danger');
+                }
+            } else if (step === 2) {
+                // التحقق من اختيار القسم
+                if (!selectedDepartment) {
+                    showAlert('يرجى اختيار القسم', 'danger');
+                    isValid = false;
+                }
+            } else if (step === 3) {
+                // التحقق من اختيار التخصصات
+                const specialties = selectedDepartment === 'socialSciences' ? socialSciencesSpecialties : humanitiesSpecialties;
+                const requiredCount = selectedDepartment === 'socialSciences' ? 5 : 4;
+                
+                // التحقق من أن جميع التخصصات تم ترتيبها
+                const orderedSpecialties = specialties.filter(s => s.order !== null);
+                
+                if (orderedSpecialties.length < requiredCount) {
+                    showAlert(`يرجى ترتيب جميع التخصصات (${orderedSpecialties.length}/${requiredCount})`, 'danger');
+                    isValid = false;
+                    
+                    // تحديد التخصصات التي لم يتم اختيارها بعد
+                    specialties.forEach(specialty => {
+                        const selectElement = document.getElementById(`${specialty.id}-order`);
+                        if (!selectElement.value) {
+                            selectElement.classList.add('is-invalid');
+                        } else {
+                            selectElement.classList.remove('is-invalid');
+                        }
+                    });
+                }
+                
+                // التحقق من عدم وجود ترتيبات مكررة
+                const orders = orderedSpecialties.map(s => s.order);
+                const uniqueOrders = [...new Set(orders)];
+                
+                if (orders.length !== uniqueOrders.length) {
+                    showAlert('يوجد ترتيبات مكررة، يرجى التأكد من تخصيص ترتيب فريد لكل تخصص', 'danger');
+                    isValid = false;
+                }
+            }
+            
+            return isValid;
         }
 
         function nextStep(step) {
@@ -822,6 +914,22 @@
             document.getElementById('progressBar').style.width = `${progress}%`;
         }
 
+        function updateStepIndicators() {
+            for (let i = 1; i <= 4; i++) {
+                const stepElement = document.getElementById(`step${i}`);
+                if (i < currentStep) {
+                    stepElement.classList.remove('active');
+                    stepElement.classList.add('completed');
+                } else if (i === currentStep) {
+                    stepElement.classList.add('active');
+                    stepElement.classList.remove('completed');
+                } else {
+                    stepElement.classList.remove('active');
+                    stepElement.classList.remove('completed');
+                }
+            }
+        }
+
         function hideCurrentStep() {
             const sections = {
                 1: 'personalInfoSection',
@@ -847,127 +955,8 @@
             }
         }
 
-        function updateStepIndicators() {
-            for (let i = 1; i <= 4; i++) {
-                const stepElement = document.getElementById(`step${i}`);
-                if (i < currentStep) {
-                    stepElement.classList.remove('active');
-                    stepElement.classList.add('completed');
-                } else if (i === currentStep) {
-                    stepElement.classList.add('active');
-                    stepElement.classList.remove('completed');
-                } else {
-                    stepElement.classList.remove('active');
-                    stepElement.classList.remove('completed');
-                }
-            }
-        }
-
-        function validateStep(step) {
-            if (step === 1) {
-                const requiredFields = ['fname', 'lname', 'nom', 'prenom', 'birthdate', 'birthplace', 'email', 'phone', 'registrationNumber', 'fileUpload'];
-                for (const field of requiredFields) {
-                    const element = document.getElementById(field);
-                    if (!element.value) {
-                        showAlert(`يرجى ملء جميع الحقول المطلوبة`, 'danger');
-                        element.focus();
-                        return false;
-                    }
-                }
-                
-                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-                if (!emailRegex.test(document.getElementById('email').value)) {
-                    showAlert('يرجى إدخال بريد إلكتروني صحيح', 'danger');
-                    document.getElementById('email').focus();
-                    return false;
-                }
-                
-                const phoneRegex = /^[0-9+\s-]{8,15}$/;
-                if (!phoneRegex.test(document.getElementById('phone').value)) {
-                    showAlert('يرجى إدخال رقم هاتف صحيح', 'danger');
-                    document.getElementById('phone').focus();
-                    return false;
-                }
-                
-                return true;
-            } else if (step === 2) {
-                if (!selectedDepartment) {
-                    showAlert('يرجى اختيار القسم', 'danger');
-                    return false;
-                }
-                return true;
-            } else if (step === 3) {
-                const specialties = selectedDepartment === 'socialSciences' ? socialSciencesSpecialties : humanitiesSpecialties;
-                const selectedOrders = specialties.filter(s => s.order !== null).map(s => s.order);
-                
-                if (selectedOrders.length < 3) {
-                    showAlert('يرجى اختيار على الأقل 3 تخصصات وترتيبها حسب الأولوية', 'danger');
-                    return false;
-                }
-                
-                const uniqueOrders = new Set(selectedOrders);
-                if (uniqueOrders.size !== selectedOrders.length) {
-                    showAlert('يرجى عدم تكرار نفس الأولوية لأكثر من تخصص', 'danger');
-                    return false;
-                }
-                
-                return true;
-            } else if (step === 4) {
-                if (!document.getElementById('confirmAccuracy').checked) {
-                    showAlert('يرجى الموافقة على صحة المعلومات المقدمة', 'danger');
-                    return false;
-                }
-                return true;
-            }
-            
-            return true;
-        }
-
-        function selectDepartment(department) {
-            selectedDepartment = department;
-            document.getElementById('department').value = department;
-            
-            const socialCard = document.querySelector('.department-card:nth-child(1)');
-            const humanitiesCard = document.querySelector('.department-card:nth-child(2)');
-            
-            if (department === 'socialSciences') {
-                socialCard.classList.add('selected');
-                humanitiesCard.classList.remove('selected');
-            } else {
-                socialCard.classList.remove('selected');
-                humanitiesCard.classList.add('selected');
-            }
-        }
-
-        function updateSpecialtyOrder(specialtyId, order, type) {
-            const specialties = type === 'social' ? socialSciencesSpecialties : humanitiesSpecialties;
-            const specialty = specialties.find(s => s.id === specialtyId);
-            
-            if (specialty) {
-                specialty.order = order ? parseInt(order) : null;
-                
-                // Update card styling
-                const card = document.getElementById(`card-${specialtyId}`);
-                if (order) {
-                    card.classList.add('selected');
-                } else {
-                    card.classList.remove('selected');
-                }
-                
-                // Check for duplicate orders
-                const duplicateOrder = specialties.filter(s => s.id !== specialtyId && s.order === parseInt(order));
-                if (duplicateOrder.length > 0) {
-                    duplicateOrder.forEach(s => {
-                        s.order = null;
-                        document.getElementById(`${s.id}-order`).value = '';
-                        document.getElementById(`card-${s.id}`).classList.remove('selected');
-                    });
-                    showAlert('تم إعادة ضبط التخصص الآخر الذي كان له نفس الأولوية', 'info');
-                }
-            }
-        }
-
         function fillConfirmationData() {
+            // ملء بيانات التأكيد
             document.getElementById('confirm-fname').textContent = document.getElementById('fname').value;
             document.getElementById('confirm-lname').textContent = document.getElementById('lname').value;
             document.getElementById('confirm-nom').textContent = document.getElementById('nom').value;
@@ -983,41 +972,87 @@
             };
             document.getElementById('confirm-department').textContent = departmentNames[selectedDepartment] || '';
             
+            // ملء التخصصات
             const specialtiesContainer = document.getElementById('confirm-specialties');
-            specialtiesContainer.innerHTML = '';
-            
             const specialties = selectedDepartment === 'socialSciences' ? socialSciencesSpecialties : humanitiesSpecialties;
             const sortedSpecialties = [...specialties].filter(s => s.order !== null).sort((a, b) => a.order - b.order);
             
             if (sortedSpecialties.length > 0) {
-                const list = document.createElement('ol');
+                let specialtiesHTML = '<ul>';
                 sortedSpecialties.forEach(specialty => {
-                    const item = document.createElement('li');
-                    item.textContent = specialty.name;
-                    list.appendChild(item);
+                    specialtiesHTML += `<li>${specialty.order}. ${specialty.name}</li>`;
                 });
-                specialtiesContainer.appendChild(list);
+                specialtiesHTML += '</ul>';
+                specialtiesContainer.innerHTML = specialtiesHTML;
             } else {
                 specialtiesContainer.textContent = 'لم يتم اختيار أي تخصصات';
             }
         }
 
-        function submitForm() {
+        async function submitForm() {
             if (!validateStep(4)) return;
             
-            document.getElementById('submitButton').disabled = true;
-            document.getElementById('submitButton').innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i> جاري الإرسال...';
+            const submitButton = document.getElementById('submitButton');
+            submitButton.disabled = true;
+            submitButton.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i> جاري الإرسال...';
             
-            // Simulate form submission
-            setTimeout(function() {
-                // Firebase submission would go here in a real application
+            try {
+                // التحقق من وجود ملف
+                const fileInput = document.getElementById('fileUpload');
+                if (!fileInput.files || fileInput.files.length === 0) {
+                    throw new Error("يرجى اختيار ملف");
+                }
                 
-                hideCurrentStep();
-                currentStep = 5;
-                showCurrentStep();
-                document.getElementById('submitButton').disabled = false;
-                document.getElementById('submitButton').innerHTML = '<i class="fas fa-paper-plane me-2"></i> إرسال الطلب';
-            }, 1500);
+                const file = fileInput.files[0];
+                
+                // التحقق من حجم الملف (1 ميجابايت كحد أقصى)
+                if (file.size > 1 * 1024 * 1024) {
+                    throw new Error("حجم الملف كبير جدًا. يرجى اختيار ملف أقل من 1 ميجابايت");
+                }
+                
+                // رفع الملف إلى ImgBB
+                const fileUrl = await uploadToImgBB(file);
+                
+                // محاكاة إرسال النموذج
+                setTimeout(function() {
+                    // في التطبيق الحقيقي، هنا سيتم إرسال البيانات إلى Firebase
+                    
+                    hideCurrentStep();
+                    currentStep = 5;
+                    showCurrentStep();
+                    document.getElementById('progressBar').style.width = '100%';
+                }, 1500);
+            } catch (error) {
+                console.error("Error submitting:", error);
+                showAlert(`حدث خطأ أثناء الإرسال: ${error.message}`, 'danger');
+            } finally {
+                submitButton.disabled = false;
+                submitButton.innerHTML = '<i class="fas fa-paper-plane me-2"></i> إرسال الطلب';
+            }
+        }
+
+        // وظيفة رفع الملف إلى ImgBB
+        async function uploadToImgBB(file) {
+            try {
+                const formData = new FormData();
+                formData.append("image", file);
+                
+                const response = await fetch("https://api.imgbb.com/1/upload?key=3e4da14142a2ae5084d3cc4028dfceef", {
+                    method: "POST",
+                    body: formData
+                });
+                
+                if (!response.ok) {
+                    throw new Error("تعذر رفع الملف، يرجى المحاولة لاحقاً");
+                }
+                
+                const data = await response.json();
+                return data.data.url; // إرجاع رابط الصورة المباشر
+                
+            } catch (error) {
+                console.error("ImgBB upload error:", error);
+                throw new Error("تعذر رفع الملف، يرجى المحاولة لاحقاً");
+            }
         }
 
         function showAlert(message, type) {
@@ -1036,185 +1071,6 @@
                 setTimeout(() => alertDiv.remove(), 300);
             }, 5000);
         }
-
-        function generatePDF() {
-            const { jsPDF } = window.jspdf;
-            const doc = new jsPDF({
-                orientation: 'portrait',
-                unit: 'mm',
-                format: 'a4',
-                margins: { top: 20, right: 20, bottom: 20, left: 20 }
-            });
-            
-            // Add title
-            doc.setFont("Helvetica", "bold");
-            doc.setFontSize(18);
-            doc.text("استمارة التوجيه - جامعة البليدة 2", 105, 20, { align: "center" });
-            
-            // Add personal information
-            doc.setFont("Helvetica", "bold");
-            doc.setFontSize(14);
-            doc.text("المعلومات الشخصية", 105, 30, { align: "center" });
-            
-            doc.setFont("Helvetica", "normal");
-            doc.setFontSize(12);
-            doc.text(`الاسم: ${document.getElementById('fname').value}`, 170, 40, { align: "right" });
-            doc.text(`اللقب: ${document.getElementById('lname').value}`, 170, 47, { align: "right" });
-            doc.text(`Nom: ${document.getElementById('nom').value}`, 170, 54, { align: "right" });
-            doc.text(`Prénom: ${document.getElementById('prenom').value}`, 170, 61, { align: "right" });
-            doc.text(`تاريخ الميلاد: ${document.getElementById('birthdate').value}`, 170, 68, { align: "right" });
-            doc.text(`مكان الميلاد: ${document.getElementById('birthplace').value}`, 170, 75, { align: "right" });
-            doc.text(`البريد الإلكتروني: ${document.getElementById('email').value}`, 170, 82, { align: "right" });
-            doc.text(`رقم الهاتف: ${document.getElementById('phone').value}`, 170, 89, { align: "right" });
-            doc.text(`رقم التسجيل: ${document.getElementById('registrationNumber').value}`, 170, 96, { align: "right" });
-            
-            // Add department and specialties
-            doc.setFont("Helvetica", "bold");
-            doc.setFontSize(14);
-            doc.text("القسم والتخصصات", 105, 110, { align: "center" });
-            
-            const departmentNames = {
-                'socialSciences': 'العلوم الاجتماعية',
-                'humanities': 'العلوم الإنسانية'
-            };
-            
-            doc.setFont("Helvetica", "normal");
-            doc.setFontSize(12);
-            doc.text(`القسم: ${departmentNames[selectedDepartment] || ''}`, 170, 120, { align: "right" });
-            
-            const specialties = selectedDepartment === 'socialSciences' ? socialSciencesSpecialties : humanitiesSpecialties;
-            const sortedSpecialties = [...specialties].filter(s => s.order !== null).sort((a, b) => a.order - b.order);
-            
-            doc.text("التخصصات حسب الأولوية:", 170, 127, { align: "right" });
-            
-            let yPos = 134;
-            sortedSpecialties.forEach((specialty, index) => {
-                doc.text(`${index + 1}. ${specialty.name}`, 165, yPos, { align: "right" });
-                yPos += 7;
-            });
-            
-            // Add signature area
-            doc.setFont("Helvetica", "bold");
-            doc.text("توقيع الطالب", 40, 200);
-            doc.line(20, 210, 60, 210);
-            
-            // Add date
-            const today = new Date();
-            const dateStr = today.toLocaleDateString('ar-DZ');
-            doc.text(`التاريخ: ${dateStr}`, 170, 200, { align: "right" });
-            
-            // Add footer
-            doc.setFontSize(10);
-            doc.text("جامعة لونيسي علي - البليدة 2 © 2025", 105, 280, { align: "center" });
-            
-            // Save the PDF
-            doc.save(`استمارة_التوجيه_${document.getElementById('lname').value}_${document.getElementById('fname').value}.pdf`);
-        }
-        async function submitForm() {
-    const { db, firestoreFunctions } = window.firebaseApp || {};
-    const { collection, addDoc, serverTimestamp } = firestoreFunctions || {};
-    
-    if (!addDoc) {
-        console.error("Firebase functions not available");
-        showAlert("نظام التخزين غير متاح حالياً، يرجى المحاولة لاحقاً", "danger");
-        return;
-    }
-
-    const confirmAccuracy = document.getElementById('confirmAccuracy');
-    if (!confirmAccuracy?.checked) {
-        showAlert('يرجى التأكيد على صحة المعلومات المقدمة', 'danger');
-        confirmAccuracy?.classList.add('is-invalid');
-        return;
-    }
-
-    const submitButton = document.getElementById('submitButton');
-    submitButton.disabled = true;
-    submitButton.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i> جاري الإرسال...';
-
-    try {
-        const form = document.getElementById('registrationForm');
-        let fileUrl = null;
-
-        // Handle file upload to ImgBB if file exists
-        const fileInput = document.getElementById('fileUpload');
-        if (fileInput.files.length > 0) {
-            const file = fileInput.files[0];
-            
-            // Validate file size (1MB limit)
-            if (file.size > 1 * 1024 * 1024) {
-                throw new Error("حجم الملف كبير جدًا. يرجى اختيار ملف أقل من 1 ميجابايت");
-            }
-            
-            // Upload to ImgBB
-            fileUrl = await uploadToImgBB(file);
-        }
-
-        // Prepare form data for Firestore
-        const formData = {
-            // Personal Information
-            fname: form.fname.value,
-            lname: form.lname.value,
-            nom: form.nom.value,
-            prenom: form.prenom.value,
-            birthdate: form.birthdate.value,
-            birthplace: form.birthplace.value,
-            
-            // Contact Information
-            email: form.email.value,
-            phone: form.phone.value,
-            registrationNumber: form.registrationNumber.value,
-            
-            // Academic Information
-            department: selectedDepartment,
-            specialties: selectedDepartment === 'socialSciences' ? 
-                        socialSciencesSpecialties : humanitiesSpecialties,
-            
-            // System Information
-            fileUrl: fileUrl, // Will be null if no file uploaded
-            submittedAt: serverTimestamp()
-        };
-
-        // Add to Firestore
-        await addDoc(collection(db, "registrations"), formData);
-
-        // Show success
-        document.getElementById('confirmationSection').classList.add('hidden');
-        currentStep = 5;
-        document.getElementById('successSection').classList.remove('hidden');
-        document.getElementById('progressBar').style.width = '100%';
-
-    } catch (error) {
-        console.error("Error submitting:", error);
-        showAlert(حدث خطأ أثناء الإرسال: ${error.message}, 'danger');
-    } finally {
-        submitButton.disabled = false;
-        submitButton.innerHTML = '<i class="fas fa-paper-plane me-2"></i> إرسال الطلب';
-    }
-}
-
-// ImgBB Upload Function
-async function uploadToImgBB(file) {
-    try {
-        const formData = new FormData();
-        formData.append("image", file);
-        
-        const response = await fetch("https://api.imgbb.com/1/upload?key=3e4da14142a2ae5084d3cc4028dfceef", {
-            method: "POST",
-            body: formData
-        });
-        
-        if (!response.ok) {
-            throw new Error("تعذر رفع الملف، يرجى المحاولة لاحقاً");
-        }
-        
-        const data = await response.json();
-        return data.data.url; // Returns direct image URL
-        
-    } catch (error) {
-        console.error("ImgBB upload error:", error);
-        throw new Error("تعذر رفع الملف، يرجى المحاولة لاحقاً");
-    }
-}
     </script>
 </body>
 </html>
