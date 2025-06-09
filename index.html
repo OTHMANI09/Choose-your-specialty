@@ -7,7 +7,8 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
-    <style>        :root {
+    <style>
+        :root {
             --primary: #22a25b;
             --secondary: #22a25b;
             --accent: #ffc107;
@@ -15,23 +16,30 @@
             --dark: #343a40;
             --orange: #ff8c00;
             --navy-blue: #0a2342;
+            --red: #dc3545;
         }
 
         body {
             font-family: 'Tajawal', sans-serif;
             direction: rtl;
             text-align: right;
-            background: linear-gradient(rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.9)), url('https://via.placeholder.com/1920x1080') no-repeat center center fixed;
-            background-size: cover;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
             padding: 20px;
             color: #333;
-        }        .university-header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .university-header {
             text-align: center;
             margin-bottom: 30px;
             color: white;
             background-color: var(--navy-blue);
-            padding: 20px;
-            border-radius: 10px;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
         }
 
         .university-logo {
@@ -40,351 +48,82 @@
         }
 
         .container {
-            max-width: 900px;
+            max-width: 800px;
             margin: auto;
-            background-color: rgba(255, 255, 255, 0.95);
-            padding: 30px;
+            background-color: rgba(255, 255, 255, 0.98);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2);
+            border-top: 5px solid var(--red);
+            border-bottom: 5px solid var(--red);
+        }
+
+        .closed-message {
+            text-align: center;
+            padding: 40px 20px;
+            background-color: #fff3cd;
+            border: 2px solid #ffeaa7;
             border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-            border-top: 5px solid var(--primary);
-            border-bottom: 5px solid var(--secondary);
+            margin: 30px 0;
+            box-shadow: 0 8px 25px rgba(255, 193, 7, 0.3);
         }
 
-        h2 {
-            color: var(--primary);
-            text-align: center;
-            margin-bottom: 30px;
+        .closed-message i {
+            font-size: 4rem;
+            color: var(--red);
+            margin-bottom: 20px;
+            animation: pulse 2s infinite;
+        }
+
+        .closed-message h2 {
+            color: var(--red);
             font-weight: 700;
-            position: relative;
-            padding-bottom: 10px;
-        }
-
-        h2:after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 100px;
-            height: 3px;
-            background-color: var(--secondary);
-        }
-
-        h3 {
-            color: var(--primary);
-            margin: 20px 0;
-            font-weight: 600;
-            font-size: 1.4rem;
-        }
-
-        label {
-            font-weight: 500;
-            color: var(--dark);
-            margin-bottom: 8px;
-            display: block;
-        }
-
-        .form-control, .form-select {
-            padding: 12px;
             margin-bottom: 20px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            transition: all 0.3s;
+            font-size: 2rem;
         }
 
-        .form-control:focus, .form-select:focus {
-            border-color: var(--primary);
-            box-shadow: 0 0 0 0.25rem rgba(34, 162, 91, 0.25);
-        }
-
-        .btn-primary {
-            background-color: var(--primary);
-            border-color: var(--primary);
-            padding: 12px 20px;
-            font-size: 18px;
-            font-weight: 500;
-            border-radius: 8px;
-            transition: all 0.3s;
-        }
-
-        .btn-primary:hover {            background-color: #1b8249;
-            border-color: #1b8249;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-        }
-
-        .btn-primary:disabled {
-            background-color: #6c757d;
-            border-color: #6c757d;
-            cursor: not-allowed;
-        }
-
-        .section {
-            margin-bottom: 30px;
-            padding: 20px;
-            border-radius: 8px;
-            background-color: #fff;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-        }
-
-        .hidden {
-            display: none;
-        }
-
-        .subsection {
+        .closed-message p {
+            color: #856404;
+            font-size: 1.2rem;
+            line-height: 1.8;
             margin-bottom: 15px;
-            padding: 15px;
-            background-color: #f9f9f9;
-            border-radius: 8px;
-            border-right: 3px solid var(--primary);
-        }
-
-        .form-section-title {
-            background-color: var(--primary);
-            color: white;
-            padding: 15px;
-            margin-bottom: 20px;
-            border-radius: 8px;
-            text-align: center;
-            font-weight: 600;
-        }
-
-        .file-upload {
-            position: relative;
-            display: inline-block;
-            width: 100%;
-        }
-
-        .file-upload-label {
-            display: block;
-            padding: 12px;
-            background-color: #f8f9fa;
-            border: 1px dashed #ced4da;
-            border-radius: 8px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-
-        .file-upload-label:hover {
-            background-color: #e9ecef;
-        }
-
-        .file-upload-input {
-            position: absolute;
-            left: 0;
-            top: 0;
-            right: 0;
-            bottom: 0;
-            width: 100%;
-            height: 100%;
-            opacity: 0;
-            cursor: pointer;
-        }
-
-        .file-name {
-            margin-top: 10px;
-            font-size: 14px;
-            color: #6c757d;
-        }
-
-        .preference-card {
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            margin-bottom: 15px;
-            padding: 15px;
-            transition: all 0.3s;
-        }
-
-        .preference-card.selected {
-            border-color: var(--primary);
-            box-shadow: 0 0 0 1px var(--primary);
-        }
-
-        .department-selector {
-            display: flex;
-            gap: 20px;
-            margin-bottom: 20px;
-        }
-
-        .department-card {
-            flex: 1;
-            padding: 20px;
-            border: 2px solid #ddd;
-            border-radius: 10px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-
-        .department-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
-        }
-
-        .department-card.selected {
-            border-color: var(--primary);
-            background-color: rgba(34, 162, 91, 0.05);
-        }
-
-        .department-card i {
-            font-size: 3rem;
-            margin-bottom: 15px;
-            color: var(--primary);
-        }
-
-        .department-card h4 {
-            color: var(--primary);
-            margin-bottom: 10px;
-        }
-
-        .progress-bar {
-            height: 10px;
-            margin-bottom: 30px;
-            border-radius: 5px;
-            background-color: #e9ecef;
-        }
-
-        .progress-bar-fill {
-            height: 100%;
-            border-radius: 5px;
-            background: linear-gradient(to right, var(--primary), var(--secondary));
-            transition: width 0.5s ease;
-        }
-
-        .step-indicator {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 30px;
-        }
-
-        .step {
-            text-align: center;
-            flex: 1;
-        }
-
-        .step-number {
-            width: 40px;
-            height: 40px;
-            line-height: 40px;
-            border-radius: 50%;
-            background-color: #e9ecef;
-            color: #6c757d;
-            margin: 0 auto 10px;
-            font-weight: bold;
-            position: relative;
-            z-index: 1;
-        }
-
-        .step.active .step-number {
-            background-color: var(--primary);
-            color: white;
-        }
-
-        .step.completed .step-number {
-            background-color: var(--secondary);
-            color: white;
-        }
-
-        .step-title {
-            font-size: 14px;
-            color: #6c757d;
-        }
-
-        .step.active .step-title {
-            color: var(--primary);
-            font-weight: bold;
-        }
-
-        .step.completed .step-title {
-            color: var(--secondary);
-        }
-
-        .form-footer {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 30px;
-        }
-
-        .btn-secondary {
-            background-color: #6c757d;
-            border-color: #6c757d;
-            color: white;
-        }
-
-        .btn-secondary:hover {
-            background-color: #5a6268;
-            border-color: #5a6268;
         }
 
         .university-info {
             text-align: center;
-            margin-top: 20px;
-            padding: 15px;
-            background-color: rgba(255, 255, 255, 0.8);
-            border-radius: 8px;
+            margin-top: 30px;
+            padding: 20px;
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 10px;
             font-size: 14px;
             color: #6c757d;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
         }
 
-        .alert {
-            padding: 15px;
-            margin-bottom: 20px;
-            border-radius: 8px;
-        }
-
-        .alert-success {
-            background-color: #d4edda;
-            border-color: #c3e6cb;
-            color: #155724;
-        }
-
-        .alert-danger {
-            background-color: #f8d7da;
-            border-color: #f5c6cb;
-            color: #721c24;
-        }
-
-        .input-group {
-            position: relative;
-            margin-bottom: 20px;
-        }
-
-        .input-group-text {
-            position: absolute;
-            right: 12px;
-            top: 12px;
-            color: #6c757d;
-            background: none;
-            border: none;
-            z-index: 2;
-        }
-
-        .form-control-icon {
-            padding-right: 40px;
-        }
-
-        .form-check-input.is-invalid {
-            border-color: #dc3545;
-        }
-
-        .form-check-label {
-            font-size: 16px;
-            color: var(--dark);
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.1);
+            }
+            100% {
+                transform: scale(1);
+            }
         }
 
         @media (max-width: 768px) {
-            .department-selector {
-                flex-direction: column;
+            .container {
+                margin: 10px;
+                padding: 20px;
             }
-
-            .form-footer {
-                flex-direction: column;
-                gap: 10px;
+            
+            .closed-message h2 {
+                font-size: 1.5rem;
             }
-
-            .btn {
-                width: 100%;
+            
+            .closed-message p {
+                font-size: 1rem;
             }
         }
     </style>
@@ -396,252 +135,15 @@
             <h1>جامعة لونيسي علي - البليدة 2</h1>
             <p>كلية العلوم الإنسانية والاجتماعية</p>
             <p>قسم التعليم المشترك للعلوم الإنسانية والاجتماعية</p>
-              <h1>اإنتهت الفترة المحددة لتحديد التوجيه والرغبات</h1>
-            <h1>استمارة التوجيه وتحديد الرغبات</h1>
-             <h1>اإنتهت الفترة المحددة لتحديد التوجيه والرغبات</h1>
         </div>
 
-        <div class="progress-bar">
-            <div class="progress-bar-fill" id="progressBar" style="width: 0%"></div>
+        <div class="closed-message">
+            <i class="fas fa-exclamation-triangle"></i>
+            <h2>انتهت الفترة المحددة لتحديد التوجيه والرغبات</h2>
+            <p>نعتذر، لقد انتهت المهلة الزمنية المحددة لتقديم طلبات التوجيه وتحديد الرغبات.</p>
+            <p>لمزيد من المعلومات، يرجى التواصل مع الإدارة.</p>
+            <p><strong>شكراً لتفهمكم</strong></p>
         </div>
-
-        <div class="step-indicator">
-            <div class="step active" id="step1">
-                <div class="step-number">1</div>
-                <div class="step-title">المعلومات الشخصية</div>
-            </div>
-            <div class="step" id="step2">
-                <div class="step-number">2</div>
-                <div class="step-title">اختيار القسم</div>
-            </div>
-            <div class="step" id="step3">
-                <div class="step-number">3</div>
-                <div class="step-title">اختيار التخصصات</div>
-            </div>
-            <div class="step" id="step4">
-                <div class="step-number">4</div>
-                <div class="step-title">تأكيد</div>
-            </div>
-        </div>
-
-        <form id="registrationForm">
-            <div class="section" id="personalInfoSection">
-                <div class="form-section-title">
-                    <i class="fas fa-user-circle me-2"></i> المعلومات الشخصية
-                </div>
-
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="input-group">
-                            <span class="input-group-text"><i class="fas fa-user"></i></span>
-                            <input type="text" id="fname" name="fname" class="form-control form-control-icon" placeholder="الاسم" required>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="input-group">
-                            <span class="input-group-text"><i class="fas fa-user"></i></span>
-                            <input type="text" id="lname" name="lname" class="form-control form-control-icon" placeholder="اللقب" required>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="input-group">
-                            <span class="input-group-text"><i class="fas fa-user"></i></span>
-                            <input type="text" id="nom" name="nom" class="form-control form-control-icon" placeholder="Nom" required>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="input-group">
-                            <span class="input-group-text"><i class="fas fa-user"></i></span>
-                            <input type="text" id="prenom" name="prenom" class="form-control form-control-icon" placeholder="Prénom" required>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="input-group">
-                            <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
-                            <input type="date" id="birthdate" name="birthdate" class="form-control form-control-icon" required>
-                            <label for="birthdate">تاريخ الميلاد</label>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="input-group">
-                            <span class="input-group-text"><i class="fas fa-map-marker-alt"></i></span>
-                            <input type="text" id="birthplace" name="birthplace" class="form-control form-control-icon" placeholder="مكان الميلاد" required>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="input-group">
-                            <span class="input-group-text"><i class="fas fa-envelope"></i></span>
-                            <input type="email" id="email" name="email" class="form-control form-control-icon" placeholder="البريد الإلكتروني" required>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="input-group">
-                            <span class="input-group-text"><i class="fas fa-phone"></i></span>
-                            <input type="tel" id="phone" name="phone" class="form-control form-control-icon" placeholder="رقم الهاتف" required>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="input-group">
-                            <span class="input-group-text"><i class="fas fa-id-card"></i></span>
-                            <input type="text" id="registrationNumber" name="registration_number" class="form-control form-control-icon" placeholder="رقم التسجيل" required>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="col-md-12">
-                        <label>إدراج صورة من بطاقة الطالب أو الشهادة الدراسية (اختياري):</label>
-                        <div class="file-upload">
-                            <label class="file-upload-label">
-                                <i class="fas fa-cloud-upload-alt me-2"></i>
-                                اختر الملف
-                                <input type="file" id="fileUpload" name="file" class="file-upload-input" accept="image/*,application/pdf">
-                            </label>
-                            <div id="fileName" class="file-name text-center">لم يتم اختيار ملف</div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="form-footer">
-                    <div></div>
-                    <button type="button" class="btn btn-primary" onclick="nextStep(1)">التالي <i class="fas fa-arrow-left ms-2"></i></button>
-                </div>
-            </div>
-
-            <div class="section hidden" id="departmentSection">
-                <div class="form-section-title">
-                    <i class="fas fa-university me-2"></i> اختيار القسم
-                </div>
-
-                <div class="department-selector">
-                    <div class="department-card" onclick="selectDepartment('socialSciences')">
-                        <i class="fas fa-users"></i>
-                        <h4>العلوم الاجتماعية</h4>
-                        <p>علم النفس، علوم التربية، علم الاجتماع، الديموغرافيا، الأرطوفونيا</p>
-                    </div>
-                    <div class="department-card" onclick="selectDepartment('humanities')">
-                        <i class="fas fa-book"></i>
-                        <h4>العلوم الإنسانية</h4>
-                        <p>علم الآثار، علم المكتبات، تاريخ عام، إعلام واتصال</p>
-                    </div>
-                </div>
-
-                <input type="hidden" id="department" name="department">
-
-                <div class="form-footer">
-                    <button type="button" class="btn btn-secondary" onclick="previousStep(2)"><i class="fas fa-arrow-right me-2"></i> السابق</button>
-                    <button type="button" class="btn btn-primary" onclick="nextStep(2)">التالي <i class="fas fa-arrow-left ms-2"></i></button>
-                </div>
-            </div>
-
-            <div class="section hidden" id="socialSciencesSection">
-                <div class="form-section-title">
-                    <i class="fas fa-users me-2"></i> العلوم الاجتماعية - اختيار التخصصات
-                </div>
-
-                <p class="alert alert-info">
-                    <i class="fas fa-info-circle me-2"></i>
-                    يرجى ترتيب التخصصات حسب الأولوية من 1 إلى 5 (حيث 1 هي الأولوية الأعلى)
-                </p>
-
-                <div id="social-sciences-container"></div>
-
-                <div class="form-footer">
-                    <button type="button" class="btn btn-secondary" onclick="previousStep(3)"><i class="fas fa-arrow-right me-2"></i> السابق</button>
-                    <button type="button" class="btn btn-primary" onclick="nextStep(3)">التالي <i class="fas fa-arrow-left ms-2"></i></button>
-                </div>
-            </div>
-
-            <div class="section hidden" id="humanitiesSection">
-                <div class="form-section-title">
-                    <i class="fas fa-book me-2"></i> العلوم الإنسانية - اختيار التخصصات
-                </div>
-
-                <p class="alert alert-info">
-                    <i class="fas fa-info-circle me-2"></i>
-                    يرجى ترتيب التخصصات حسب الأولوية من 1 إلى 4 (حيث 1 هي الأولوية الأعلى)
-                </p>
-
-                <div id="humanities-container"></div>
-
-                <div class="form-footer">
-                    <button type="button" class="btn btn-secondary" onclick="previousStep(3)"><i class="fas fa-arrow-right me-2"></i> السابق</button>
-                    <button type="button" class="btn btn-primary" onclick="nextStep(3)">التالي <i class="fas fa-arrow-left ms-2"></i></button>
-                </div>
-            </div>
-
-            <div class="section hidden" id="confirmationSection">
-                <div class="form-section-title">
-                    <i class="fas fa-check-circle me-2"></i> تأكيد المعلومات
-                </div>
-
-                <div class="alert alert-info">
-                    <i class="fas fa-info-circle me-2"></i>
-                    يرجى مراجعة المعلومات التالية قبل إرسال الطلب
-                </div>
-
-                <div class="subsection">
-                    <h3><i class="fas fa-user me-2"></i> المعلومات الشخصية</h3>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <p><strong>الاسم:</strong> <span id="confirm-fname"></span></p>
-                            <p><strong>اللقب:</strong> <span id="confirm-lname"></span></p>
-                            <p><strong>Nom:</strong> <span id="confirm-nom"></span></p>
-                            <p><strong>Prénom:</strong> <span id="confirm-prenom"></span></p>
-                        </div>
-                        <div class="col-md-6">
-                            <p><strong>تاريخ الميلاد:</strong> <span id="confirm-birthdate"></span></p>
-                            <p><strong>مكان الميلاد:</strong> <span id="confirm-birthplace"></span></p>
-                            <p><strong>البريد الإلكتروني:</strong> <span id="confirm-email"></span></p>
-                            <p><strong>رقم الهاتف:</strong> <span id="confirm-phone"></span></p>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="subsection">
-                    <h3><i class="fas fa-university me-2"></i> القسم والتخصصات</h3>
-                    <p><strong>القسم:</strong> <span id="confirm-department"></span></p>
-                    <div id="confirm-specialties"></div>
-                </div>
-
-                <div class="subsection">
-                    <div class="form-check">
-                        <input type="checkbox" class="form-check-input" id="confirmAccuracy" name="confirm_accuracy" required>
-                        <label class="form-check-label" for="confirmAccuracy">
-                            أقر بأن جميع المعلومات المقدمة صحيحة وأتحمل المسؤولية الكاملة عن صحتها. وأوافق على أن أي معلومات خاطئة قد تؤدي إلى توجيهي تلقائيا.
-                        </label>
-                    </div>
-                </div>
-
-                <div class="form-footer">
-                    <button type="button" class="btn btn-secondary" onclick="previousStep(4)"><i class="fas fa-arrow-right me-2"></i> السابق</button>
-                    <button type="button" class="btn btn-primary" id="submitButton" onclick="submitForm()"><i class="fas fa-paper-plane me-2"></i> إرسال الطلب</button>
-                </div>
-            </div>
-
-            <div class="section hidden" id="successSection">
-                <div class="text-center">
-                    <i class="fas fa-check-circle fa-5x text-success mb-4"></i>
-                    <h2>تم إرسال طلبك بنجاح!</h2>
-                    <p>سيتم التواصل معك قريبا عبر البريد الإلكتروني</p>
-                    <button type="button" class="btn btn-primary mt-4" onclick="resetForm()">
-                        <i class="fas fa-redo me-2"></i> تقديم طلب آخر
-                    </button>
-                </div>
-            </div>
-        </form>
     </div>
 
     <div class="university-info">
@@ -649,464 +151,6 @@
         <p>العنوان: الجامعة المركزية، الطريق الوطني رقم 1، البليدة، الجزائر</p>
     </div>
 
-
-    <script type="module">
-    
-        import { initializeApp } from 'https://www.gstatic.com/firebasejs/11.7.3/firebase-app.js';
-        import { 
-          getFirestore, 
-          collection, 
-          addDoc, 
-          serverTimestamp 
-        } from 'https://www.gstatic.com/firebasejs/11.7.3/firebase-firestore.js';
-        import { 
-          getStorage, 
-          ref, 
-          uploadBytes, 
-          getDownloadURL 
-        } from 'https://www.gstatic.com/firebasejs/11.7.3/firebase-storage.js';
-        import { getAnalytics } from 'https://www.gstatic.com/firebasejs/11.7.3/firebase-analytics.js';
-      
-const firebaseConfig = {
-
-  apiKey: "AIzaSyCbR6oZ-FL1W77QOA2mYyrB1LMLLPK1g0I",
-
-  authDomain: "othmane09.firebaseapp.com",
-
-  projectId: "othmane09",
-
-  storageBucket: "othmane09.firebasestorage.app",
-
-  messagingSenderId: "8838610152",
-
-  appId: "1:8838610152:web:e0b7c24a8fc26f7031dd5d",
-
-  measurementId: "G-8RMZLM1XMR"
-
-};
-
-
-      
-  
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app); 
-        const storage = getStorage(app);  
-        const analytics = getAnalytics(app);  
-
-        window.firebaseApp = {
-          db,
-          storage,
-          analytics,
-          firestoreFunctions: { collection, addDoc, serverTimestamp },
-          storageFunctions: { ref, uploadBytes, getDownloadURL }
-        };
-      
-        console.log("Firebase initialized successfully!");
-      </script>
-
-
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-        let currentStep = 1;
-        let selectedDepartment = '';
-        let socialSciencesSpecialties = [
-            { id: 'psychology', name: 'علم النفس', order: null },
-            { id: 'education', name: 'علوم التربية', order: null },
-            { id: 'sociology', name: 'علم الاجتماع', order: null },
-            { id: 'demography', name: 'الديموغرافيا', order: null },
-            { id: 'orthophony', name: 'الأرطوفونيا', order: null }
-        ];
-        let humanitiesSpecialties = [
-            { id: 'archaeology', name: 'علم الآثار', order: null },
-            { id: 'libraryScience', name: 'علم المكتبات', order: null },
-            { id: 'generalHistory', name: 'تاريخ عام', order: null },
-            { id: 'mediaCommunication', name: 'إعلام واتصال', order: null }
-        ];
-
-        document.addEventListener('DOMContentLoaded', function() {
-            document.getElementById('fileUpload').addEventListener('change', function() {
-                const file = this.files[0];
-                const fileName = file ? file.name : 'لم يتم اختيار ملف';
-                document.getElementById('fileName').textContent = fileName;
-                if (file && file.size > 1 * 1024 * 1024) { 
-                    showAlert('حجم الملف كبير جدًا. يرجى اختيار ملف أقل من 1 ميجابايت.', 'danger');
-                    this.value = '';
-                    document.getElementById('fileName').textContent = 'لم يتم اختيار ملف';
-                }
-            });
-            initializeSpecialties();
-        });
-
-        function initializeSpecialties() {
-            const socialSciencesContainer = document.getElementById('social-sciences-container');
-            const humanitiesContainer = document.getElementById('humanities-container');
-            socialSciencesContainer.innerHTML = '';
-            humanitiesContainer.innerHTML = '';
-
-            socialSciencesSpecialties.forEach(specialty => {
-                const card = document.createElement('div');
-                card.className = 'preference-card';
-                card.id = `card-${specialty.id}`;
-                card.innerHTML = `
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div><h5>${specialty.name}</h5></div>
-                        <div>
-                            <select id="${specialty.id}-order" name="specialty_${specialty.id}" class="form-select specialty-order" onchange="updateSpecialtyOrder('${specialty.id}', this.value, 'social')">
-                                <option value="">اختر الأولوية</option>
-                                <option value="1">الأولوية الأولى</option>
-                                <option value="2">الأولوية الثانية</option>
-                                <option value="3">الأولوية الثالثة</option>
-                                <option value="4">الأولوية الرابعة</option>
-                                <option value="5">الأولوية الخامسة</option>
-                            </select>
-                        </div>
-                    </div>
-                `;
-                socialSciencesContainer.appendChild(card);
-            });
-
-            humanitiesSpecialties.forEach(specialty => {
-                const card = document.createElement('div');
-                card.className = 'preference-card';
-                card.id = `card-${specialty.id}`;
-                card.innerHTML = `
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div><h5>${specialty.name}</h5></div>
-                        <div>
-                            <select id="${specialty.id}-order" name="specialty_${specialty.id}" class="form-select specialty-order" onchange="updateSpecialtyOrder('${specialty.id}', this.value, 'humanities')">
-                                <option value="">اختر الأولوية</option>
-                                <option value="1">الأولوية الأولى</option>
-                                <option value="2">الأولوية الثانية</option>
-                                <option value="3">الأولوية الثالثة</option>
-                                <option value="4">الأولوية الرابعة</option>
-                            </select>
-                        </div>
-                    </div>
-                `;
-                humanitiesContainer.appendChild(card);
-            });
-        }
-
-        function updateProgress() {
-            const progressBar = document.getElementById('progressBar');
-            const progressPercentage = (currentStep - 1) * (100 / 3); 
-            progressBar.style.width = `${progressPercentage}%`;
-        }
-
-        function nextStep(step) {
-            if (!validateStep(step)) return;
-            hideCurrentStep();
-            currentStep = step + 1;
-            showCurrentStep();
-            updateProgress();
-            updateStepIndicators();
-            if (currentStep === 4) fillConfirmationData();
-        }
-
-        function previousStep(step) {
-            hideCurrentStep();
-            currentStep = step - 1;
-            showCurrentStep();
-            updateProgress();
-            updateStepIndicators();
-        }
-
-        function hideCurrentStep() {
-            const sections = {
-                1: 'personalInfoSection',
-                2: 'departmentSection',
-                3: selectedDepartment === 'socialSciences' ? 'socialSciencesSection' : 'humanitiesSection',
-                4: 'confirmationSection'
-            };
-            if (sections[currentStep]) {
-                document.getElementById(sections[currentStep]).classList.add('hidden');
-            }
-        }
-
-        function showCurrentStep() {
-            const sections = {
-                1: 'personalInfoSection',
-                2: 'departmentSection',
-                3: selectedDepartment === 'socialSciences' ? 'socialSciencesSection' : selectedDepartment === 'humanities' ? 'humanitiesSection' : 'departmentSection',
-                4: 'confirmationSection',
-                5: 'successSection'
-            };
-            if (sections[currentStep]) {
-                document.getElementById(sections[currentStep]).classList.remove('hidden');
-            }
-            if (currentStep === 3 && !selectedDepartment) {
-                currentStep = 2;
-                document.getElementById('departmentSection').classList.remove('hidden');
-            }
-        }
-
-        function updateStepIndicators() {
-            document.querySelectorAll('.step').forEach(step => {
-                step.classList.remove('active', 'completed');
-            });
-            for (let i = 1; i < currentStep; i++) {
-                document.getElementById(`step${i}`).classList.add('completed');
-            }
-            if (currentStep <= 4) {
-                document.getElementById(`step${currentStep}`).classList.add('active');
-            }
-        }
-
-        function validateStep(step) {
-            let isValid = true;
-            switch(step) {
-                case 1:
-                    const requiredFields = ['fname', 'lname', 'nom', 'prenom', 'birthdate', 'birthplace', 'email', 'phone', 'registrationNumber'];
-                    requiredFields.forEach(field => {
-                        const element = document.getElementById(field);
-                        if (element.value.trim() === '') {
-                            element.classList.add('is-invalid');
-                            isValid = false;
-                        } else {
-                            element.classList.remove('is-invalid');
-                        }
-                    });
-                    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-                    if (!emailPattern.test(document.getElementById('email').value)) {
-                        document.getElementById('email').classList.add('is-invalid');
-                        isValid = false;
-                    }
-                    if (!isValid) showAlert('يرجى ملء جميع الحقول المطلوبة بشكل صحيح', 'danger');
-                    break;
-                case 2:
-                    if (!selectedDepartment) {
-                        showAlert('يرجى اختيار القسم', 'danger');
-                        isValid = false;
-                    }
-                    break;
-                case 3:
-                    const specialties = selectedDepartment === 'socialSciences' ? socialSciencesSpecialties : humanitiesSpecialties;
-                    const usedOrders = new Set();
-                    let allSelected = true;
-                    specialties.forEach(specialty => {
-                        const orderElement = document.getElementById(`${specialty.id}-order`);
-                        const order = orderElement.value;
-                        if (order === '') {
-                            allSelected = false;
-                            orderElement.classList.add('is-invalid');
-                        } else {
-                            orderElement.classList.remove('is-invalid');
-                            usedOrders.add(order);
-                        }
-                    });
-                    if (usedOrders.size !== specialties.length) {
-                        showAlert('يرجى اختيار أولوية مختلفة لكل تخصص', 'danger');
-                        isValid = false;
-                    } else if (!allSelected) {
-                        showAlert('يرجى تحديد أولوية لجميع التخصصات', 'danger');
-                        isValid = false;
-                    }
-                    break;
-            }
-            return isValid;
-        }
-
-        function showAlert(message, type) {
-            const alertDiv = document.createElement('div');
-            alertDiv.className = `alert alert-${type} alert-dismissible fade show`;
-            alertDiv.role = 'alert';
-            alertDiv.innerHTML = `
-                <i class="fas fa-${type === 'danger' ? 'exclamation-triangle' : 'info-circle'} me-2"></i>
-                ${message}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            `;
-            const currentSection = document.querySelector('.section:not(.hidden)');
-            currentSection.insertBefore(alertDiv, currentSection.firstChild);
-            setTimeout(() => alertDiv.remove(), 5000);
-        }
-
-        function selectDepartment(department) {
-            selectedDepartment = department;
-            document.getElementById('department').value = department;
-            document.querySelectorAll('.department-card').forEach(card => card.classList.remove('selected'));
-            event.currentTarget.classList.add('selected');
-        }
-
-        function updateSpecialtyOrder(specialtyId, order, type) {
-            const specialties = type === 'social' ? socialSciencesSpecialties : humanitiesSpecialties;
-            const specialty = specialties.find(s => s.id === specialtyId);
-            specialty.order = order ? parseInt(order) : null;
-            const card = document.getElementById(`card-${specialtyId}`);
-            card.classList.toggle('selected', !!order);
-            checkForDuplicateOrders(type);
-        }
-
-        function checkForDuplicateOrders(type) {
-            const specialties = type === 'social' ? socialSciencesSpecialties : humanitiesSpecialties;
-            const orders = new Map();
-            specialties.forEach(specialty => {
-                if (specialty.order) {
-                    if (!orders.has(specialty.order)) orders.set(specialty.order, []);
-                    orders.get(specialty.order).push(specialty.id);
-                }
-            });
-            specialties.forEach(specialty => {
-                const selectElement = document.getElementById(`${specialty.id}-order`);
-                selectElement.classList.remove('is-invalid');
-            });
-            orders.forEach((ids, order) => {
-                if (ids.length > 1) {
-                    ids.forEach(id => document.getElementById(`${id}-order`).classList.add('is-invalid'));
-                }
-            });
-        }
-
-        function fillConfirmationData() {
-            document.getElementById('confirm-fname').textContent = document.getElementById('fname').value;
-            document.getElementById('confirm-lname').textContent = document.getElementById('lname').value;
-            document.getElementById('confirm-nom').textContent = document.getElementById('nom').value;
-            document.getElementById('confirm-prenom').textContent = document.getElementById('prenom').value;
-            document.getElementById('confirm-birthdate').textContent = formatDate(document.getElementById('birthdate').value);
-            document.getElementById('confirm-birthplace').textContent = document.getElementById('birthplace').value;
-            document.getElementById('confirm-email').textContent = document.getElementById('email').value;
-            document.getElementById('confirm-phone').textContent = document.getElementById('phone').value;
-            document.getElementById('confirm-department').textContent = 
-                selectedDepartment === 'socialSciences' ? 'العلوم الاجتماعية' : 'العلوم الإنسانية';
-            const specialtiesContainer = document.getElementById('confirm-specialties');
-            specialtiesContainer.innerHTML = '';
-            const specialties = selectedDepartment === 'socialSciences' ? socialSciencesSpecialties : humanitiesSpecialties;
-            const sortedSpecialties = [...specialties].sort((a, b) => a.order - b.order);
-            sortedSpecialties.forEach(specialty => {
-                const p = document.createElement('p');
-                p.innerHTML = `<strong>الرغبة ${specialty.order}:</strong> ${specialty.name}`;
-                specialtiesContainer.appendChild(p);
-            });
-        }
-
-        function formatDate(dateString) {
-            const date = new Date(dateString);
-            return date.toLocaleDateString('ar-DZ');
-        }
-
-        async function submitForm() {
-    const { db, firestoreFunctions } = window.firebaseApp || {};
-    const { collection, addDoc, serverTimestamp } = firestoreFunctions || {};
-    
-    if (!addDoc) {
-        console.error("Firebase functions not available");
-        showAlert("نظام التخزين غير متاح حالياً، يرجى المحاولة لاحقاً", "danger");
-        return;
-    }
-
-    const confirmAccuracy = document.getElementById('confirmAccuracy');
-    if (!confirmAccuracy?.checked) {
-        showAlert('يرجى التأكيد على صحة المعلومات المقدمة', 'danger');
-        confirmAccuracy?.classList.add('is-invalid');
-        return;
-    }
-
-    const submitButton = document.getElementById('submitButton');
-    submitButton.disabled = true;
-    submitButton.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i> جاري الإرسال...';
-
-    try {
-        const form = document.getElementById('registrationForm');
-        let fileUrl = null;
-
-        // Handle file upload to ImgBB if file exists
-        const fileInput = document.getElementById('fileUpload');
-        if (fileInput.files.length > 0) {
-            const file = fileInput.files[0];
-            
-            // Validate file size (1MB limit)
-            if (file.size > 1 * 1024 * 1024) {
-                throw new Error("حجم الملف كبير جدًا. يرجى اختيار ملف أقل من 1 ميجابايت");
-            }
-            
-            // Upload to ImgBB
-            fileUrl = await uploadToImgBB(file);
-        }
-
-        // Prepare form data for Firestore
-        const formData = {
-            // Personal Information
-            fname: form.fname.value,
-            lname: form.lname.value,
-            nom: form.nom.value,
-            prenom: form.prenom.value,
-            birthdate: form.birthdate.value,
-            birthplace: form.birthplace.value,
-            
-            // Contact Information
-            email: form.email.value,
-            phone: form.phone.value,
-            registrationNumber: form.registrationNumber.value,
-            
-            // Academic Information
-            department: selectedDepartment,
-            specialties: selectedDepartment === 'socialSciences' ? 
-                        socialSciencesSpecialties : humanitiesSpecialties,
-            
-            // System Information
-            fileUrl: fileUrl, // Will be null if no file uploaded
-            submittedAt: serverTimestamp()
-        };
-
-        // Add to Firestore
-        await addDoc(collection(db, "registrations"), formData);
-
-        // Show success
-        document.getElementById('confirmationSection').classList.add('hidden');
-        currentStep = 5;
-        document.getElementById('successSection').classList.remove('hidden');
-        document.getElementById('progressBar').style.width = '100%';
-
-    } catch (error) {
-        console.error("Error submitting:", error);
-        showAlert(`حدث خطأ أثناء الإرسال: ${error.message}`, 'danger');
-    } finally {
-        submitButton.disabled = false;
-        submitButton.innerHTML = '<i class="fas fa-paper-plane me-2"></i> إرسال الطلب';
-    }
-}
-
-// ImgBB Upload Function
-async function uploadToImgBB(file) {
-    try {
-        const formData = new FormData();
-        formData.append("image", file);
-        
-        const response = await fetch("https://api.imgbb.com/1/upload?key=3e4da14142a2ae5084d3cc4028dfceef", {
-            method: "POST",
-            body: formData
-        });
-        
-        if (!response.ok) {
-            throw new Error("تعذر رفع الملف، يرجى المحاولة لاحقاً");
-        }
-        
-        const data = await response.json();
-        return data.data.url; // Returns direct image URL
-        
-    } catch (error) {
-        console.error("ImgBB upload error:", error);
-        throw new Error("تعذر رفع الملف، يرجى المحاولة لاحقاً");
-    }
-}
-
-
-
-        function resetForm() {
-            document.getElementById('registrationForm').reset();
-            document.getElementById('confirmAccuracy').checked = false;
-            currentStep = 1;
-            selectedDepartment = '';
-            socialSciencesSpecialties.forEach(specialty => specialty.order = null);
-            humanitiesSpecialties.forEach(specialty => specialty.order = null);
-            document.querySelectorAll('.preference-card').forEach(card => card.classList.remove('selected'));
-            document.querySelectorAll('.department-card').forEach(card => card.classList.remove('selected'));
-            initializeSpecialties();
-            document.querySelectorAll('.section').forEach(section => section.classList.add('hidden'));
-            document.getElementById('personalInfoSection').classList.remove('hidden');
-            document.getElementById('progressBar').style.width = '0%';
-            updateStepIndicators();
-            document.getElementById('fileName').textContent = 'لم يتم اختيار ملف';
-        }
-    </script>
 </body>
 </html>
